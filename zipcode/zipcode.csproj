@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_")).cli</RootNamespace>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>zipcode</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <Copyright>X-Minutes 2021</Copyright>
+    <Version>0.1.0</Version>
+    <Company>X-Minutes</Company>
+    <Authors>ysFred4</Authors>
+    <SignAssembly>False</SignAssembly>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Tools to help developers zip up source code without any extra files.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
