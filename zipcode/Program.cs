@@ -1,14 +1,14 @@
 ﻿using System.IO.Compression;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
-
-void printVersion()
+void PrintVersion()
 {
     Console.WriteLine($"zipcode {Assembly.GetEntryAssembly()?.GetName().Version}");
     Console.WriteLine();
 }
 
-void printFolderExistsError()
+void PrintFolderExistsError()
 {
     Console.WriteLine($"The last parameter passed in should be the folder to zip or file to unzip.");
     Console.WriteLine($"  zipcode CodeFolder");
@@ -17,23 +17,30 @@ void printFolderExistsError()
 }
 
 
-void printOverwriteError()
+void PrintOverwriteError()
 {
     Console.WriteLine("Use --overwrite option to overwrite an existing zip file");
     Console.WriteLine();
 }
-void printSuccessCreate(string zipName)
+void PrintSuccessCreate(string zipName)
 {
     Console.WriteLine($"Zip file {zipName} created.");
     Console.WriteLine();
 }
 
-void printSuccessExtract(string zipName, string folderName)
+void PrintErrorCreate(string zipName)
+{
+    Console.WriteLine($"Zip file {zipName} could not be created.");
+    Console.WriteLine($"Make sure that none of the files are being used by another program.");
+    Console.WriteLine();
+}
+
+void PrintSuccessExtract(string zipName, string folderName)
 {
     Console.WriteLine($"Zip file {zipName} extracted to {folderName}.");
     Console.WriteLine();
 }
-void printHelp()
+void PrintHelp()
 {
     Console.WriteLine();
     Console.WriteLine("Usage: zipcode [options] <folder-to-zip | file-to-unzip>");
@@ -66,12 +73,12 @@ var allArgs = args.AsQueryable();
 
 if(!allArgs.Any() || allArgs.FirstOrDefault(a => a.Equals("-h") || a.Equals("--help")) != null)
 {
-    printHelp();
+    PrintHelp();
     return;
 }
 if (allArgs.Any() && allArgs.FirstOrDefault(a => a.Equals("--version")) != null)
 {
-    printVersion();
+    PrintVersion();
     return;
 }
 if (allArgs.Any() && allArgs.FirstOrDefault(a => a.Equals("--nodate")) != null)
@@ -101,44 +108,60 @@ if (unZip == false)
 {
     if(!Directory.Exists(folder))
     {
-        printFolderExistsError();
+        PrintFolderExistsError();
         return;
     }
     if (overwrite == false && File.Exists(zipName))
     {
-        printOverwriteError();
+        PrintOverwriteError();
         return;
     }
     if (overwrite == true)
         File.Delete(zipName);
-    ZipFile.CreateFromDirectory(folder, zipName, CompressionLevel.Optimal, true);
 
-    // remove extra stuff
-    RemoveFolder(zipName, ".vs");
-    RemoveFolder(zipName, "obj");
-    RemoveFiles(zipName, ".pdb");
-
-    if (zipExe == false)
+    try
     {
-        RemoveFolder(zipName, "bin");
-        RemoveFolder(zipName, "debug");
-        RemoveFolder(zipName, "release");
-        RemoveFolder(zipName, "x64/debug");
-        RemoveFolder(zipName, "x64/release");
-    }
+        ZipFile.CreateFromDirectory(folder, zipName, CompressionLevel.Optimal, true);
 
-    printSuccessCreate(zipName);
+        // remove extra stuff
+        RemoveFolder(zipName, ".vs");
+        RemoveFolder(zipName, "obj");
+        RemoveFiles(zipName, ".pdb");
+
+        if (zipExe == false)
+        {
+            RemoveFolder(zipName, "bin");
+            RemoveFolder(zipName, "debug");
+            RemoveFolder(zipName, "release");
+            RemoveFolder(zipName, "x64/debug");
+            RemoveFolder(zipName, "x64/release");
+        }
+
+        PrintSuccessCreate(zipName);
+    }
+    catch (Exception)
+    {
+        File.Delete(zipName);
+        PrintErrorCreate(zipName);
+    }
 }
 else
 {
+    string pattern = $"^(?:(?:[.\\/\\\\ ])*)((?:[a-zA-Z0-9 ])*)(?:_+(?:[0-9])+_+(?:[0-9])+(?:\\.zip))*";
+    var match = Regex.Match(folder, pattern);
+
     if (!File.Exists(folder))
     {
-        printFolderExistsError();
+        PrintFolderExistsError();
         return;
     }
     string folderName = folder.Replace(".zip","");
+    if (match.Success)
+    {
+        folderName = match.Groups[1].Value;
+    }
     ZipFile.ExtractToDirectory(folder, $"{folderName}");
-    printSuccessExtract(folder, folderName);
+    PrintSuccessExtract(folder, folderName);
 }
 
 void RemoveFiles(string zipName, string extension)

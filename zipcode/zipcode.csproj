@@ -9,14 +9,25 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>zipcode</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
-    <Copyright>X-Minutes 2021</Copyright>
-    <Version>0.1.0</Version>
+    <Copyright>X-Minutes 2021-2022</Copyright>
+    <Version>0.2.0</Version>
     <Company>X-Minutes</Company>
     <Authors>ysFred4</Authors>
     <SignAssembly>False</SignAssembly>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Tools to help developers zip up source code without any extra files.</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/x-minutes/zipcode</RepositoryUrl>
+    <PackageTags>compress, zip, visual studio project, visual studio solution</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
