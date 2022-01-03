@@ -25,3 +25,7 @@ If you want to use zipcode to also unzip a project then you can add the --unzip 
 
 > zipcode --unzip myproject.zip
 
+Uninstalling zipcode can be done with the following command:
+
+> dotnet tool uninstall --global zipcode
+
