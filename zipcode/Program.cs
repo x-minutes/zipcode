@@ -2,6 +2,14 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+void PrintWelcome(string folder, bool unZip)
+{
+    if(unZip == false)
+        Console.WriteLine($"Compressing {folder}...");
+    else
+        Console.WriteLine($"Extracting {folder}...");
+}
+
 void PrintVersion()
 {
     Console.WriteLine($"zipcode {Assembly.GetEntryAssembly()?.GetName().Version}");
@@ -22,6 +30,7 @@ void PrintOverwriteError()
     Console.WriteLine("Use --overwrite option to overwrite an existing zip file");
     Console.WriteLine();
 }
+
 void PrintSuccessCreate(string zipName)
 {
     Console.WriteLine($"Zip file {zipName} created.");
@@ -61,7 +70,6 @@ void PrintHelp()
     Console.WriteLine();
 }
 
-
 bool zipExe = false;
 bool useDate = true;
 string password = string.Empty;
@@ -99,11 +107,15 @@ if (allArgs.Any() && allArgs.FirstOrDefault(a => a.Equals("--unzip")) != null)
 }
 
 string folder = allArgs.Last();
-string name = folder.Replace("../", "").Replace("./", "");
-string zipName = $"{name}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.zip";
+string name = folder.Replace("../", "")
+                    .Replace("./", "")
+                    .Replace("..\\", "")
+                    .Replace($".\\", "");
+string zipName = $"{name}_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
 if(useDate == false)
     zipName = $"{name}.zip";
 
+PrintWelcome(name, unZip);
 if (unZip == false)
 {
     if(!Directory.Exists(folder))

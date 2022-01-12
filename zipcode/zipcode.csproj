@@ -10,7 +10,7 @@
     <ToolCommandName>zipcode</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <Copyright>X-Minutes 2021-2022</Copyright>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Company>X-Minutes</Company>
     <Authors>ysFred4</Authors>
     <SignAssembly>False</SignAssembly>
